@@ -10,7 +10,7 @@
 //   }
 // };
 
-// THIS IS BASICALLY WITH THE PROMICES
+// THIS IS WITH THE PROMICES
 const asyncHandler = (requestHandler) => (req, res, next) => {
   Promise.resolve(requestHandler(req, res, next)).catch((err) => next(err));
 };
