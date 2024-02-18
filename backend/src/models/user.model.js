@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import bcrypt, { hash } from "bcrypt";
 
 const userSchema = new Schema(
   {
@@ -58,8 +58,13 @@ userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   // encrypt the password with the hash code using the bcrypt package
-  // this.password = await bcrypt.hash(this.password, 10);
-  this.password = bcrypt.hash(this.password, 10);
+  // this.password = await bcrypt.hash(this.password, 10); // normally await has no effect on it
+  this.password = await new Promise((resolve, reject) => {
+    bcrypt.hash(this.password, 10, (err, hashNow) => {
+      if (err) reject(err);
+      resolve(hashNow);
+    });
+  });
   next();
 });
 
